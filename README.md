@@ -298,7 +298,61 @@ python inspect_session.py
 
 ---
 
-## 🛠️ Troubleshooting
+## � Proving No Direct Communication (WebSocket Proxy)
+
+Five ways to verify the WebSocket proxy version has **zero** direct browser-to-Azure traffic:
+
+### 1. Browser DevTools (easiest)
+
+Open `F12` → **Network** tab → start a session → filter by `WS`:
+
+| | WebRTC version | WebSocket Proxy version |
+|---|---|---|
+| Requests to `*.openai.azure.com` | ✅ `POST /realtime/calls` | ❌ **None** |
+| WebSocket connections | None | `wss://<your-server>/ws` only |
+| `chrome://webrtc-internals` | Active RTCPeerConnection | **Completely empty** |
+
+### 2. Search the browser source code
+
+View source on `ws.html` — there is **no Azure URL anywhere**:
+
+```powershell
+Select-String -Path websocket/static/ws.html -Pattern "openai|azure|foundry"
+# Returns nothing. It only connects to ${location.host}/ws — your own server.
+```
+
+### 3. Block Azure at the browser level
+
+Add to your `hosts` file temporarily:
+```
+127.0.0.1 foundry-multimodel.openai.azure.com
+```
+
+- **WebSocket proxy**: still works ✅ (browser never calls Azure)
+- **WebRTC version**: breaks immediately ❌ (browser can't reach Azure for SDP)
+
+### 4. Server logs show the relay
+
+Every audio frame is logged server-side:
+```
+[relay] browser -> Azure: input_audio_buffer.append   (your mic audio)
+[relay] Azure -> browser: response.output_audio.delta  (model's voice)
+```
+If it were direct, the server would see nothing after initial connect.
+
+### 5. Summary table
+
+| Evidence | WebRTC | WebSocket Proxy |
+|---|---|---|
+| Network tab shows `*.openai.azure.com` | Yes | **No** |
+| `chrome://webrtc-internals` has connections | Yes | **Empty** |
+| Blocking Azure DNS breaks it | Yes | **No** |
+| Server logs show every audio frame | No | **Yes** |
+| Browser JS contains Azure URLs | Yes | **No** |
+
+---
+
+## �🛠️ Troubleshooting
 
 | Problem | Fix |
 |---|---|
