@@ -1,169 +1,157 @@
-<mxfile host="app.diagrams.net" modified="2026-04-18" agent="copilot" version="24.0">
-  <diagram name="WebRTC Architecture" id="webrtc-arch">
-    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
-      <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
-
-        <!-- Title -->
-        <mxCell id="title" value="Realtime Agent — WebRTC (Direct) Architecture" style="text;html=1;fontSize=22;fontStyle=1;align=center;verticalAlign=middle;whiteSpace=wrap;" vertex="1" parent="1">
-          <mxGeometry x="350" y="15" width="700" height="40" as="geometry"/>
-        </mxCell>
-
-        <!-- ===== BROWSER ZONE ===== -->
-        <mxCell id="browser-zone" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=15;fontStyle=1;strokeWidth=3;" vertex="1" parent="1">
-          <mxGeometry x="40" y="90" width="380" height="470" as="geometry"/>
-        </mxCell>
-        <mxCell id="ic-browser" style="image;aspect=fixed;html=1;points=[];align=center;image=img/lib/azure2/general/Browser.svg;" vertex="1" parent="1">
-          <mxGeometry x="55" y="100" width="50" height="40" as="geometry"/>
-        </mxCell>
-        <mxCell id="browser-title" value="Browser (Client)" style="text;html=1;fontSize=15;fontStyle=1;align=left;" vertex="1" parent="1">
-          <mxGeometry x="115" y="105" width="200" height="30" as="geometry"/>
-        </mxCell>
-        <mxCell id="browser-ui" value="index.html — Start / Stop / Send Text" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
-          <mxGeometry x="65" y="155" width="335" height="40" as="geometry"/>
-        </mxCell>
-        <mxCell id="browser-mic" value="🎤 getUserMedia() — Microphone Capture" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
-          <mxGeometry x="65" y="210" width="335" height="40" as="geometry"/>
-        </mxCell>
-        <mxCell id="browser-rtc" value="📡 RTCPeerConnection — WebRTC (SDP + ICE)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6f4ea;strokeColor=#16a34a;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="65" y="265" width="335" height="45" as="geometry"/>
-        </mxCell>
-        <mxCell id="browser-audio" value="🔊 &lt;audio&gt; — Plays model voice (native stream)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
-          <mxGeometry x="65" y="325" width="335" height="40" as="geometry"/>
-        </mxCell>
-        <mxCell id="browser-dc" value="📨 Data Channel — text, events, transcripts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
-          <mxGeometry x="65" y="380" width="335" height="40" as="geometry"/>
-        </mxCell>
-        <mxCell id="browser-token" value="⚠️ ek_... ephemeral token visible in DevTools" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff9cc;strokeColor=#d6b656;fontSize=10;fontStyle=2;" vertex="1" parent="1">
-          <mxGeometry x="65" y="435" width="335" height="30" as="geometry"/>
-        </mxCell>
-        <mxCell id="browser-direct" value="Direct connection to *.openai.azure.com" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=2;" vertex="1" parent="1">
-          <mxGeometry x="65" y="475" width="335" height="30" as="geometry"/>
-        </mxCell>
-
-        <!-- ===== FLASK SERVER (App Service) ===== -->
-        <mxCell id="flask-zone" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;verticalAlign=top;fontSize=15;fontStyle=1;strokeWidth=3;" vertex="1" parent="1">
-          <mxGeometry x="500" y="90" width="340" height="470" as="geometry"/>
-        </mxCell>
-        <mxCell id="ic-appservice" style="image;aspect=fixed;html=1;points=[];align=center;image=img/lib/azure2/app_services/App_Services.svg;" vertex="1" parent="1">
-          <mxGeometry x="515" y="100" width="50" height="50" as="geometry"/>
-        </mxCell>
-        <mxCell id="flask-title" value="Azure App Service (Flask)" style="text;html=1;fontSize=15;fontStyle=1;align=left;" vertex="1" parent="1">
-          <mxGeometry x="575" y="110" width="250" height="30" as="geometry"/>
-        </mxCell>
-        <mxCell id="flask-file" value="token_service.py" style="text;html=1;fontSize=11;fontStyle=2;align=left;" vertex="1" parent="1">
-          <mxGeometry x="575" y="135" width="120" height="18" as="geometry"/>
-        </mxCell>
-        <mxCell id="flask-page" value="GET /  →  Serves index.html" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="1">
-          <mxGeometry x="520" y="170" width="300" height="38" as="geometry"/>
-        </mxCell>
-        <mxCell id="flask-config" value="GET /config  →  Azure resource name" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="1">
-          <mxGeometry x="520" y="220" width="300" height="38" as="geometry"/>
-        </mxCell>
-        <mxCell id="flask-token" value="GET /token  →  Mints ephemeral token (ek_...)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6f4ea;strokeColor=#82b366;fontSize=12;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="520" y="270" width="300" height="42" as="geometry"/>
-        </mxCell>
-        <mxCell id="ic-mi" style="image;aspect=fixed;html=1;points=[];align=center;image=img/lib/azure2/identity/Entra_Managed_Identities.svg;" vertex="1" parent="1">
-          <mxGeometry x="520" y="330" width="45" height="45" as="geometry"/>
-        </mxCell>
-        <mxCell id="flask-mi" value="User-Assigned Managed Identity&#xa;DefaultAzureCredential (no API keys)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="575" y="330" width="245" height="50" as="geometry"/>
-        </mxCell>
-        <mxCell id="flask-idle" value="💤 Server IDLE after token mint&#xa;Not involved in the voice call" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999;fontSize=11;fontStyle=2;" vertex="1" parent="1">
-          <mxGeometry x="520" y="400" width="300" height="42" as="geometry"/>
-        </mxCell>
-        <mxCell id="ic-nsg" style="image;aspect=fixed;html=1;points=[];align=center;image=img/lib/azure2/networking/Network_Security_Groups.svg;" vertex="1" parent="1">
-          <mxGeometry x="520" y="460" width="40" height="40" as="geometry"/>
-        </mxCell>
-        <mxCell id="flask-role" value="Cognitive Services User role on OpenAI resource" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
-          <mxGeometry x="570" y="462" width="250" height="35" as="geometry"/>
-        </mxCell>
-
-        <!-- ===== AZURE OPENAI ===== -->
-        <mxCell id="azure-zone" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;fontSize=15;fontStyle=1;strokeWidth=3;" vertex="1" parent="1">
-          <mxGeometry x="920" y="90" width="370" height="470" as="geometry"/>
-        </mxCell>
-        <mxCell id="ic-openai" style="image;aspect=fixed;html=1;points=[];align=center;image=img/lib/azure2/ai_machine_learning/Azure_OpenAI.svg;" vertex="1" parent="1">
-          <mxGeometry x="940" y="100" width="50" height="50" as="geometry"/>
-        </mxCell>
-        <mxCell id="azure-title" value="Azure OpenAI — East US 2" style="text;html=1;fontSize=15;fontStyle=1;align=left;" vertex="1" parent="1">
-          <mxGeometry x="1000" y="110" width="270" height="30" as="geometry"/>
-        </mxCell>
-        <mxCell id="azure-res" value="foundry-multimodel" style="text;html=1;fontSize=11;fontStyle=2;align=left;" vertex="1" parent="1">
-          <mxGeometry x="1000" y="135" width="150" height="18" as="geometry"/>
-        </mxCell>
-        <mxCell id="azure-secrets" value="POST /openai/v1/realtime/client_secrets&#xa;→ Returns ephemeral token (ek_...)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="940" y="170" width="330" height="48" as="geometry"/>
-        </mxCell>
-        <mxCell id="azure-calls" value="POST /openai/v1/realtime/calls&#xa;SDP exchange → WebRTC session established" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6f4ea;strokeColor=#16a34a;fontSize=11;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="940" y="235" width="330" height="48" as="geometry"/>
-        </mxCell>
-        <mxCell id="ic-cognitive" style="image;aspect=fixed;html=1;points=[];align=center;image=img/lib/azure2/ai_machine_learning/Cognitive_Services.svg;" vertex="1" parent="1">
-          <mxGeometry x="940" y="300" width="45" height="45" as="geometry"/>
-        </mxCell>
-        <mxCell id="azure-model" value="GPT Realtime Model (gpt-realtime-1.5)&#xa;Voice in → Voice out (PCM16, 24kHz)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="995" y="300" width="260" height="50" as="geometry"/>
-        </mxCell>
-        <mxCell id="azure-vad" value="🎙️ Server VAD — auto turn detection, barge-in" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="940" y="370" width="330" height="38" as="geometry"/>
-        </mxCell>
-        <mxCell id="azure-filter" value="🔒 webrtcfilter=on — system prompt hidden" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="940" y="420" width="330" height="35" as="geometry"/>
-        </mxCell>
-        <mxCell id="ic-dns" style="image;aspect=fixed;html=1;points=[];align=center;image=img/lib/azure2/networking/DNS_Zones.svg;" vertex="1" parent="1">
-          <mxGeometry x="940" y="468" width="40" height="40" as="geometry"/>
-        </mxCell>
-        <mxCell id="azure-public" value="Public endpoint (*.openai.azure.com)&#xa;Audio goes over public internet" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=2;" vertex="1" parent="1">
-          <mxGeometry x="990" y="468" width="275" height="40" as="geometry"/>
-        </mxCell>
-
-        <!-- ===== EDGES ===== -->
-        <mxCell id="e1" value="① GET /token" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#d6b656;fontSize=11;fontStyle=1;" edge="1" source="browser-ui" target="flask-token" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e2" value="② POST /client_secrets (AAD bearer)" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#b85450;fontSize=10;dashed=1;" edge="1" source="flask-token" target="azure-secrets" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e3" value="③ ek_ token (~60s)" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#d6b656;fontSize=10;" edge="1" source="flask-token" target="browser-rtc" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="470" y="291"/>
-              <mxPoint x="470" y="287"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="e4" value="④ WebRTC Audio (UDP, DIRECT) 🎤⟷🤖" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=5;strokeColor=#16a34a;fontSize=12;fontStyle=1;" edge="1" source="browser-rtc" target="azure-calls" parent="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="435" y="287"/>
-              <mxPoint x="435" y="610"/>
-              <mxPoint x="895" y="610"/>
-              <mxPoint x="895" y="259"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-
-        <!-- ===== LEGEND ===== -->
-        <mxCell id="legend" value="Legend" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff;strokeColor=#333;verticalAlign=top;fontSize=13;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="40" y="600" width="560" height="130" as="geometry"/>
-        </mxCell>
-        <mxCell id="leg1" value="—— Setup (HTTP, one-time)" style="text;html=1;fontSize=11;fillColor=#fff2cc;strokeColor=#d6b656;rounded=1;spacingLeft=4;" vertex="1" parent="1">
-          <mxGeometry x="60" y="630" width="200" height="24" as="geometry"/>
-        </mxCell>
-        <mxCell id="leg2" value="- - Auth (AAD → ephemeral)" style="text;html=1;fontSize=11;fillColor=#f8cecc;strokeColor=#b85450;rounded=1;spacingLeft=4;" vertex="1" parent="1">
-          <mxGeometry x="60" y="658" width="200" height="24" as="geometry"/>
-        </mxCell>
-        <mxCell id="leg3" value="══ Voice (WebRTC, continuous, DIRECT)" style="text;html=1;fontSize=11;fillColor=#e6f4ea;strokeColor=#16a34a;rounded=1;spacingLeft=4;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="60" y="686" width="250" height="24" as="geometry"/>
-        </mxCell>
-        <mxCell id="leg4" value="⚠️ Server NOT in audio path after token mint&#xa;Browser ↔ Azure directly. Bypasses VNet." style="text;html=1;fontSize=11;fontStyle=3;align=left;" vertex="1" parent="1">
-          <mxGeometry x="330" y="633" width="260" height="45" as="geometry"/>
-        </mxCell>
-        <mxCell id="leg5" value="Created by Vinex22@gmail.com / Vinayjain@microsoft.com" style="text;html=1;fontSize=10;fontStyle=2;fillColor=none;strokeColor=none;align=center;" vertex="1" parent="1">
-          <mxGeometry x="40" y="740" width="400" height="20" as="geometry"/>
-        </mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
+<mxfile host="65bd71144e">
+    <diagram name="WebRTC Architecture" id="webrtc-arch">
+        <mxGraphModel dx="818" dy="809" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="title" value="Realtime Agent — WebRTC (Direct) Architecture" style="text;html=1;fontSize=22;fontStyle=1;align=center;verticalAlign=middle;whiteSpace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="350" y="15" width="700" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="browser-zone" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=15;fontStyle=1;strokeWidth=3;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="90" width="380" height="470" as="geometry"/>
+                </mxCell>
+                <mxCell id="ic-browser" style="image;aspect=fixed;html=1;points=[];align=center;image=img/lib/azure2/general/Browser.svg;" parent="1" vertex="1">
+                    <mxGeometry x="65" y="105" width="37.5" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="browser-title" value="Browser (Client)" style="text;html=1;fontSize=15;fontStyle=1;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="115" y="105" width="200" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="browser-ui" value="index.html — Start / Stop / Send Text" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff;strokeColor=#6c8ebf;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="65" y="155" width="335" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="browser-mic" value="🎤 getUserMedia() — Microphone Capture" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff;strokeColor=#6c8ebf;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="65" y="210" width="335" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="browser-rtc" value="📡 RTCPeerConnection — WebRTC (SDP + ICE)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6f4ea;strokeColor=#16a34a;fontSize=12;fontStyle=1;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="65" y="265" width="335" height="45" as="geometry"/>
+                </mxCell>
+                <mxCell id="browser-audio" value="🔊 &lt;audio&gt; — Plays model voice (native stream)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff;strokeColor=#6c8ebf;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="65" y="325" width="335" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="browser-dc" value="📨 Data Channel — text, events, transcripts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff;strokeColor=#6c8ebf;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="65" y="380" width="335" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="browser-token" value="⚠️ ek_... ephemeral token visible in DevTools" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff9cc;strokeColor=#d6b656;fontSize=10;fontStyle=2;" parent="1" vertex="1">
+                    <mxGeometry x="65" y="435" width="335" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="browser-direct" value="Direct connection to *.openai.azure.com" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=2;" parent="1" vertex="1">
+                    <mxGeometry x="65" y="475" width="335" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="flask-zone" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;verticalAlign=top;fontSize=15;fontStyle=1;strokeWidth=3;" parent="1" vertex="1">
+                    <mxGeometry x="500" y="90" width="340" height="470" as="geometry"/>
+                </mxCell>
+                <mxCell id="ic-appservice" style="image;aspect=fixed;html=1;points=[];align=center;image=img/lib/azure2/app_services/App_Services.svg;" parent="1" vertex="1">
+                    <mxGeometry x="515" y="100" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="flask-title" value="Azure App Service (Flask)" style="text;html=1;fontSize=15;fontStyle=1;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="575" y="110" width="250" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="flask-file" value="token_service.py" style="text;html=1;fontSize=11;fontStyle=2;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="575" y="135" width="120" height="18" as="geometry"/>
+                </mxCell>
+                <mxCell id="flask-page" value="GET /  →  Serves index.html" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff;strokeColor=#d6b656;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="520" y="170" width="300" height="38" as="geometry"/>
+                </mxCell>
+                <mxCell id="flask-config" value="GET /config  →  Azure resource name" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff;strokeColor=#d6b656;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="520" y="220" width="300" height="38" as="geometry"/>
+                </mxCell>
+                <mxCell id="flask-token" value="GET /token  →  Mints ephemeral token (ek_...)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6f4ea;strokeColor=#82b366;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="520" y="270" width="300" height="42" as="geometry"/>
+                </mxCell>
+                <mxCell id="ic-mi" style="image;aspect=fixed;html=1;points=[];align=center;image=img/lib/azure2/identity/Entra_Managed_Identities.svg;" parent="1" vertex="1">
+                    <mxGeometry x="520" y="330" width="45" height="45" as="geometry"/>
+                </mxCell>
+                <mxCell id="flask-mi" value="User-Assigned Managed Identity&#xa;DefaultAzureCredential (no API keys)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="575" y="330" width="245" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="flask-idle" value="💤 Server IDLE after token mint&#xa;Not involved in the voice call" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999;fontSize=11;fontStyle=2;" parent="1" vertex="1">
+                    <mxGeometry x="520" y="400" width="300" height="42" as="geometry"/>
+                </mxCell>
+                <mxCell id="ic-nsg" style="image;aspect=fixed;html=1;points=[];align=center;image=img/lib/azure2/networking/Network_Security_Groups.svg;" parent="1" vertex="1">
+                    <mxGeometry x="520" y="460" width="40" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="flask-role" value="Cognitive Services User role on OpenAI resource" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff;strokeColor=#d6b656;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="570" y="462" width="250" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="azure-zone" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;fontSize=15;fontStyle=1;strokeWidth=3;" parent="1" vertex="1">
+                    <mxGeometry x="920" y="90" width="370" height="470" as="geometry"/>
+                </mxCell>
+                <mxCell id="ic-openai" style="image;aspect=fixed;html=1;points=[];align=center;image=img/lib/azure2/ai_machine_learning/Azure_OpenAI.svg;" parent="1" vertex="1">
+                    <mxGeometry x="940" y="100" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="azure-title" value="Azure OpenAI — East US 2" style="text;html=1;fontSize=15;fontStyle=1;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="1000" y="110" width="270" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="azure-res" value="foundry-multimodel" style="text;html=1;fontSize=11;fontStyle=2;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="1000" y="135" width="150" height="18" as="geometry"/>
+                </mxCell>
+                <mxCell id="azure-secrets" value="POST /openai/v1/realtime/client_secrets&#xa;→ Returns ephemeral token (ek_...)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff;strokeColor=#82b366;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="940" y="170" width="330" height="48" as="geometry"/>
+                </mxCell>
+                <mxCell id="azure-calls" value="POST /openai/v1/realtime/calls&#xa;SDP exchange → WebRTC session established" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6f4ea;strokeColor=#16a34a;fontSize=11;fontStyle=1;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="940" y="235" width="330" height="48" as="geometry"/>
+                </mxCell>
+                <mxCell id="ic-cognitive" style="image;aspect=fixed;html=1;points=[];align=center;image=img/lib/azure2/ai_machine_learning/Cognitive_Services.svg;" parent="1" vertex="1">
+                    <mxGeometry x="940" y="300" width="45" height="45" as="geometry"/>
+                </mxCell>
+                <mxCell id="azure-model" value="GPT Realtime Model (gpt-realtime-1.5)&#xa;Voice in → Voice out (PCM16, 24kHz)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="995" y="300" width="260" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="azure-vad" value="🎙️ Server VAD — auto turn detection, barge-in" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff;strokeColor=#82b366;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="940" y="370" width="330" height="38" as="geometry"/>
+                </mxCell>
+                <mxCell id="azure-filter" value="🔒 webrtcfilter=on — system prompt hidden" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff;strokeColor=#82b366;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="940" y="420" width="330" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="ic-dns" style="image;aspect=fixed;html=1;points=[];align=center;image=img/lib/azure2/networking/DNS_Zones.svg;" parent="1" vertex="1">
+                    <mxGeometry x="940" y="468" width="40" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="azure-public" value="Public endpoint (*.openai.azure.com)&#xa;Audio goes over public internet" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=2;" parent="1" vertex="1">
+                    <mxGeometry x="990" y="468" width="275" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="e1" value="① GET /token" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#d6b656;fontSize=11;fontStyle=1;" parent="1" source="browser-ui" target="flask-token" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e2" value="② POST /client_secrets (AAD bearer)" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#b85450;fontSize=10;dashed=1;" parent="1" source="flask-token" target="azure-secrets" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e3" value="③ ek_ token (~60s)" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#d6b656;fontSize=10;" parent="1" source="flask-token" target="browser-rtc" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="470" y="291"/>
+                            <mxPoint x="470" y="287"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e4" value="④ WebRTC Audio (UDP, DIRECT) 🎤⟷🤖" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=5;strokeColor=#16a34a;fontSize=12;fontStyle=1;" parent="1" source="browser-rtc" target="azure-calls" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="435" y="287"/>
+                            <mxPoint x="435" y="610"/>
+                            <mxPoint x="895" y="610"/>
+                            <mxPoint x="895" y="259"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="legend" value="Legend" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff;strokeColor=#333;verticalAlign=top;fontSize=13;fontStyle=1;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="600" width="560" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="leg1" value="—— Setup (HTTP, one-time)" style="text;html=1;fontSize=11;fillColor=#fff2cc;strokeColor=#d6b656;rounded=1;spacingLeft=4;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="630" width="200" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="leg2" value="- - Auth (AAD → ephemeral)" style="text;html=1;fontSize=11;fillColor=#f8cecc;strokeColor=#b85450;rounded=1;spacingLeft=4;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="658" width="200" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="leg3" value="══ Voice (WebRTC, continuous, DIRECT)" style="text;html=1;fontSize=11;fillColor=#e6f4ea;strokeColor=#16a34a;rounded=1;spacingLeft=4;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="686" width="250" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="leg4" value="⚠️ Server NOT in audio path after token mint&#xa;Browser ↔ Azure directly. Bypasses VNet." style="text;html=1;fontSize=11;fontStyle=3;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="330" y="633" width="260" height="45" as="geometry"/>
+                </mxCell>
+                <mxCell id="leg5" value="Created by Vinex22@gmail.com / Vinayjain@microsoft.com" style="text;html=1;fontSize=10;fontStyle=2;fillColor=none;strokeColor=none;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="740" width="400" height="20" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
 </mxfile>
