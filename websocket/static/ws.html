@@ -15,9 +15,23 @@
         .badge { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; color: #fff; }
         .badge-ws { background: #2563eb; }
         footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #ddd; font-size: 12px; color: #888; text-align: center; }
+        .logos { display: flex; align-items: center; gap: 18px; margin-bottom: 1.2rem; }
+        .logos img { height: 32px; }
+        .logos span { font-size: 22px; color: #999; }
+        @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        .bounce1 { animation: bounce 2s ease-in-out infinite; }
+        .bounce2 { animation: bounce 2s ease-in-out infinite 0.3s; }
+        .bounce3 { animation: bounce 2s ease-in-out infinite 0.6s; }
     </style>
 </head>
 <body>
+    <div class="logos">
+        <img src="https://img.icons8.com/color/48/microsoft.png" alt="Microsoft" class="bounce1" />
+        <span class="bounce2">+</span>
+        <img src="https://img.icons8.com/fluency/48/azure-1.png" alt="Azure" class="bounce2" />
+        <span class="bounce3">+</span>
+        <img src="https://img.icons8.com/ios-filled/50/openai.png" alt="OpenAI" class="bounce3" style="height:28px;" />
+    </div>
     <div class="header">
         <h1>🎙️ Realtime Agent</h1>
         <span class="badge badge-ws">WebSocket Proxy • VNet-Safe</span>
@@ -32,7 +46,7 @@
         <button onclick="sendText()">Send</button>
     </div>
     <div id="log"></div>
-    <footer>v1.0 &middot; Built by <strong>Vinex22@gmail.com</strong> &middot; <strong>Vinayjain@microsoft.com</strong></footer>
+    <footer>v1.1 &middot; Built by <strong>Vinex22@gmail.com</strong> &middot; <strong>Vinayjain@microsoft.com</strong></footer>
 
     <script>
         let ws = null;
