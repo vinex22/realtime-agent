@@ -77,7 +77,7 @@
                     <mxGeometry x="920" y="90" width="370" height="470" as="geometry"/>
                 </mxCell>
                 <mxCell id="ic-openai" style="image;aspect=fixed;html=1;points=[];align=center;image=img/lib/azure2/ai_machine_learning/Azure_OpenAI.svg;" parent="1" vertex="1">
-                    <mxGeometry x="940" y="100" width="50" height="50" as="geometry"/>
+                    <mxGeometry x="945" y="113" width="40" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="azure-title" value="Azure OpenAI — East US 2" style="text;html=1;fontSize=15;fontStyle=1;align=left;" parent="1" vertex="1">
                     <mxGeometry x="1000" y="110" width="270" height="30" as="geometry"/>
@@ -116,11 +116,12 @@
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="e3" value="③ ek_ token (~60s)" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#d6b656;fontSize=10;" parent="1" source="flask-token" target="browser-rtc" edge="1">
-                    <mxGeometry relative="1" as="geometry">
+                    <mxGeometry x="0.0323" y="-27" relative="1" as="geometry">
                         <Array as="points">
                             <mxPoint x="470" y="291"/>
                             <mxPoint x="470" y="287"/>
                         </Array>
+                        <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="e4" value="④ WebRTC Audio (UDP, DIRECT) 🎤⟷🤖" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=5;strokeColor=#16a34a;fontSize=12;fontStyle=1;" parent="1" source="browser-rtc" target="azure-calls" edge="1">
@@ -134,7 +135,7 @@
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="legend" value="Legend" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff;strokeColor=#333;verticalAlign=top;fontSize=13;fontStyle=1;strokeWidth=2;" parent="1" vertex="1">
-                    <mxGeometry x="40" y="600" width="560" height="130" as="geometry"/>
+                    <mxGeometry x="40" y="620" width="560" height="130" as="geometry"/>
                 </mxCell>
                 <mxCell id="leg1" value="—— Setup (HTTP, one-time)" style="text;html=1;fontSize=11;fillColor=#fff2cc;strokeColor=#d6b656;rounded=1;spacingLeft=4;" parent="1" vertex="1">
                     <mxGeometry x="60" y="630" width="200" height="24" as="geometry"/>
@@ -149,7 +150,7 @@
                     <mxGeometry x="330" y="633" width="260" height="45" as="geometry"/>
                 </mxCell>
                 <mxCell id="leg5" value="Created by Vinex22@gmail.com / Vinayjain@microsoft.com" style="text;html=1;fontSize=10;fontStyle=2;fillColor=none;strokeColor=none;align=center;" parent="1" vertex="1">
-                    <mxGeometry x="40" y="740" width="400" height="20" as="geometry"/>
+                    <mxGeometry x="50" y="800" width="400" height="20" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
