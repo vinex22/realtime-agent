@@ -32,21 +32,25 @@ Based on: <https://learn.microsoft.com/en-us/azure/ai-foundry/openai/how-to/real
 
 ```
 realtime-agent/
-├── .env                    # shared config (both versions read this)
-├── .env.example            # template
+├── .env                        # shared config (both versions read this)
+├── .env.example                # template
 ├── .gitignore
 ├── README.md
-├── inspect_session.py      # debug tool — fetches token from webapp, opens WS, prints events
-├── webrtc/                 # Version 1: WebRTC (direct browser-to-Azure)
-│   ├── token_service.py    # Flask server
+├── inspect_session.py          # debug tool — fetches token from webapp, opens WS, prints events
+├── webrtc/                     # Version 1: WebRTC (direct browser-to-Azure)
+│   ├── token_service.py        # Flask server
 │   ├── requirements.txt
+│   ├── architecture.drawio     # draw.io architecture diagram
+│   ├── arch-webrtc.png         # PNG export of architecture
 │   └── static/
-│       └── index.html      # browser client
-└── websocket/              # Version 2: WebSocket Proxy (all traffic through server)
-    ├── ws_proxy.py          # FastAPI server
+│       └── index.html          # browser client
+└── websocket/                  # Version 2: WebSocket Proxy (all traffic through server)
+    ├── ws_proxy.py             # FastAPI server
     ├── requirements.txt
+    ├── architecture.drawio     # draw.io architecture diagram
+    ├── arch-websocket.png      # PNG export of architecture
     └── static/
-        └── ws.html          # browser client
+        └── ws.html             # browser client
 ```
 
 ---
