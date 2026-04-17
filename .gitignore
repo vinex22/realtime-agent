@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+*.zip
+out.txt
+.appname.txt

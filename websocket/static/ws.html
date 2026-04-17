@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Realtime Agent (WebSocket Proxy)</title>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 820px; margin: 2rem auto; padding: 0 1rem; }
+        button { padding: 0.6rem 1rem; margin-right: 0.5rem; font-size: 1rem; }
+        #log { margin-top: 1rem; padding: 0.75rem; background: #111; color: #0f0; font-family: Consolas, monospace; font-size: 12px; height: 60vh; overflow-y: auto; border-radius: 6px; white-space: pre-wrap; }
+        .row { display: flex; gap: 0.5rem; align-items: center; }
+        textarea { width: 100%; height: 4rem; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; background: #2563eb; color: #fff; margin-left: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Realtime Agent <span class="badge">WebSocket Proxy</span></h1>
+    <p>All audio flows through the server (VNet-safe). No direct browser-to-Azure connection.</p>
+    <div class="row">
+        <button id="startBtn" onclick="startSession()">Start Session</button>
+        <button id="stopBtn" onclick="stopSession()" disabled>Stop Session</button>
+    </div>
+    <div style="margin-top: 1rem;">
+        <label>Send text: <input id="textInput" style="width:60%" placeholder="Type and press Enter" /></label>
+        <button onclick="sendText()">Send</button>
+    </div>
+    <div id="log"></div>
+
+    <script>
+        let ws = null;
+        let audioCtx = null;
+        let micStream = null;
+        let micProcessor = null;
+        let playQueue = [];
+        let isPlaying = false;
+        let activeSources = [];  // track playing BufferSourceNodes
+
+        function log(msg) {
+            const el = document.getElementById('log');
+            el.textContent += msg + '\n';
+            el.scrollTop = el.scrollHeight;
+        }
+
+        // --- Audio Playback (PCM16 24kHz from server) ---
+        function base64ToInt16(b64) {
+            const raw = atob(b64);
+            const buf = new ArrayBuffer(raw.length);
+            const u8 = new Uint8Array(buf);
+            for (let i = 0; i < raw.length; i++) u8[i] = raw.charCodeAt(i);
+            return new Int16Array(buf);
+        }
+
+        function playPcm16(int16) {
+            if (!audioCtx) return;
+            const float32 = new Float32Array(int16.length);
+            for (let i = 0; i < int16.length; i++) float32[i] = int16[i] / 32768;
+            const buffer = audioCtx.createBuffer(1, float32.length, 24000);
+            buffer.getChannelData(0).set(float32);
+            playQueue.push(buffer);
+            drainPlayQueue();
+        }
+
+        let nextPlayTime = 0;
+        function drainPlayQueue() {
+            if (playQueue.length === 0) return;
+            if (!audioCtx) return;
+            while (playQueue.length > 0) {
+                const buffer = playQueue.shift();
+                const source = audioCtx.createBufferSource();
+                source.buffer = buffer;
+                source.connect(audioCtx.destination);
+                const now = audioCtx.currentTime;
+                const startTime = Math.max(now, nextPlayTime);
+                source.start(startTime);
+                nextPlayTime = startTime + buffer.duration;
+                activeSources.push(source);
+                source.onended = () => {
+                    const idx = activeSources.indexOf(source);
+                    if (idx >= 0) activeSources.splice(idx, 1);
+                };
+            }
+        }
+
+        function stopPlayback() {
+            playQueue = [];
+            nextPlayTime = 0;
+            for (const src of activeSources) {
+                try { src.stop(); } catch {}
+            }
+            activeSources = [];
+        }
+
+        // --- Microphone Capture (PCM16 24kHz -> base64 -> server) ---
+        async function startMic() {
+            micStream = await navigator.mediaDevices.getUserMedia({ audio: { sampleRate: 24000, channelCount: 1 } });
+            audioCtx = new AudioContext({ sampleRate: 24000 });
+            const source = audioCtx.createMediaStreamSource(micStream);
+
+            // ScriptProcessorNode (widely supported; AudioWorklet is better but more complex)
+            micProcessor = audioCtx.createScriptProcessor(4096, 1, 1);
+            micProcessor.onaudioprocess = (e) => {
+                if (!ws || ws.readyState !== WebSocket.OPEN) return;
+                const float32 = e.inputBuffer.getChannelData(0);
+                const int16 = new Int16Array(float32.length);
+                for (let i = 0; i < float32.length; i++) {
+                    const s = Math.max(-1, Math.min(1, float32[i]));
+                    int16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+                }
+                // Base64 encode
+                const bytes = new Uint8Array(int16.buffer);
+                let binary = '';
+                for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+                const b64 = btoa(binary);
+
+                ws.send(JSON.stringify({
+                    type: 'input_audio_buffer.append',
+                    audio: b64,
+                }));
+            };
+            source.connect(micProcessor);
+            micProcessor.connect(audioCtx.destination); // required for onaudioprocess to fire
+            log('Mic capturing at 24kHz PCM16');
+        }
+
+        function stopMic() {
+            if (micProcessor) { micProcessor.disconnect(); micProcessor = null; }
+            if (micStream) { micStream.getTracks().forEach(t => t.stop()); micStream = null; }
+        }
+
+        // --- Session ---
+        async function startSession() {
+            document.getElementById('startBtn').disabled = true;
+            try {
+                const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+                const url = `${proto}//${location.host}/ws`;
+                log('Connecting to server: ' + url);
+
+                ws = new WebSocket(url);
+
+                ws.onopen = async () => {
+                    log('WebSocket connected to server');
+                    await startMic();
+                    document.getElementById('stopBtn').disabled = false;
+                };
+
+                ws.onmessage = (e) => {
+                    try {
+                        const evt = JSON.parse(e.data);
+
+                        if (evt.type === 'response.output_audio.delta') {
+                            // Play audio chunk
+                            const pcm = base64ToInt16(evt.delta);
+                            playPcm16(pcm);
+                        } else if (evt.type === 'response.output_audio_transcript.done') {
+                            log('Assistant: ' + (evt.transcript || ''));
+                        } else if (evt.type === 'conversation.item.input_audio_transcription.completed') {
+                            log('You: ' + (evt.transcript || ''));
+                        } else if (evt.type === 'session.created') {
+                            log('Session created: ' + (evt.session?.id || ''));
+                        } else if (evt.type === 'session.updated') {
+                            log('Session configured (voice, VAD, etc.)');
+                            log('Start talking!');
+                        } else if (evt.type === 'input_audio_buffer.speech_started') {
+                            log('[listening...]');
+                            // Interrupt playback — stop all scheduled audio immediately
+                            stopPlayback();
+                        } else if (evt.type === 'input_audio_buffer.speech_stopped') {
+                            log('[processing...]');
+                        } else if (evt.type === 'error') {
+                            log('ERROR: ' + JSON.stringify(evt.error));
+                        } else {
+                            log('  ' + evt.type);
+                        }
+                    } catch {
+                        log('raw: ' + e.data);
+                    }
+                };
+
+                ws.onclose = (e) => {
+                    log('WebSocket closed: ' + e.code + ' ' + (e.reason || ''));
+                    cleanup();
+                };
+
+                ws.onerror = () => {
+                    log('WebSocket error');
+                    cleanup();
+                };
+
+            } catch (err) {
+                log('Error: ' + err.message);
+                cleanup();
+            }
+        }
+
+        function sendText() {
+            const input = document.getElementById('textInput');
+            const text = input.value.trim();
+            if (!text || !ws || ws.readyState !== WebSocket.OPEN) return;
+            ws.send(JSON.stringify({
+                type: 'conversation.item.create',
+                item: { type: 'message', role: 'user', content: [{ type: 'input_text', text }] },
+            }));
+            ws.send(JSON.stringify({ type: 'response.create' }));
+            log('You (text): ' + text);
+            input.value = '';
+        }
+
+        document.getElementById('textInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') sendText();
+        });
+
+        function stopSession() {
+            if (ws) { ws.close(); ws = null; }
+            cleanup();
+            log('Session stopped');
+        }
+
+        function cleanup() {
+            stopMic();
+            stopPlayback();
+            if (audioCtx) { audioCtx.close(); audioCtx = null; }
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+        }
+    </script>
+</body>
+</html>

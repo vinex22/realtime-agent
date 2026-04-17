@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Azure OpenAI Realtime Agent (WebRTC)</title>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 820px; margin: 2rem auto; padding: 0 1rem; }
+        button { padding: 0.6rem 1rem; margin-right: 0.5rem; font-size: 1rem; }
+        #log { margin-top: 1rem; padding: 0.75rem; background: #111; color: #0f0; font-family: Consolas, monospace; font-size: 12px; height: 60vh; overflow-y: auto; border-radius: 6px; white-space: pre-wrap; }
+        .row { display: flex; gap: 0.5rem; align-items: center; }
+        textarea { width: 100%; height: 4rem; }
+    </style>
+</head>
+<body>
+    <h1>Azure OpenAI Realtime Agent</h1>
+    <p>Click <strong>Start Session</strong>, allow microphone access, then speak. Responses play as audio.</p>
+    <div class="row">
+        <button id="startBtn" onclick="startSession()">Start Session</button>
+        <button id="stopBtn" onclick="stopSession()" disabled>Stop Session</button>
+    </div>
+    <div style="margin-top: 1rem;">
+        <label>Send text: <input id="textInput" style="width:60%" placeholder="Type and press Enter" /></label>
+        <button onclick="sendText()">Send</button>
+    </div>
+    <div id="log"></div>
+
+    <script>
+        let pc = null;
+        let dc = null;
+        let audioEl = null;
+
+        function log(msg) {
+            const el = document.getElementById('log');
+            el.textContent += msg + '\n';
+            el.scrollTop = el.scrollHeight;
+        }
+
+        async function startSession() {
+            // Stop any existing session first
+            if (pc || dc || audioEl) stopSession();
+            document.getElementById('startBtn').disabled = true;
+            try {
+                const cfg = await (await fetch('/config')).json();
+                const WEBRTC_URL = `https://${cfg.azureResource}.openai.azure.com/openai/v1/realtime/calls?webrtcfilter=on`;
+
+                log('🔑 Requesting ephemeral token...');
+                const tokResp = await fetch('/token');
+                if (!tokResp.ok) throw new Error(`/token ${tokResp.status}`);
+                const { token } = await tokResp.json();
+                log('✅ Ephemeral token received');
+
+                pc = new RTCPeerConnection();
+
+                audioEl = document.createElement('audio');
+                audioEl.autoplay = true;
+                document.body.appendChild(audioEl);
+
+                pc.ontrack = (e) => {
+                    if (e.streams[0]) {
+                        audioEl.srcObject = e.streams[0];
+                        log('🎵 Remote audio track attached');
+                    }
+                };
+
+                log('🎤 Requesting microphone...');
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                stream.getAudioTracks().forEach((t) => pc.addTrack(t, stream));
+                log('✅ Microphone added');
+
+                dc = pc.createDataChannel('realtime-channel');
+                dc.addEventListener('open', () => {
+                    log('✅ Data channel open');
+                    document.getElementById('stopBtn').disabled = false;
+                });
+                dc.addEventListener('message', (e) => {
+                    try {
+                        const ev = JSON.parse(e.data);
+                        if (ev.type === 'response.output_audio_transcript.done') {
+                            log('🤖 ' + (ev.transcript || ''));
+                        } else if (ev.type === 'conversation.item.input_audio_transcription.completed') {
+                            log('🧑 ' + (ev.transcript || ''));
+                        } else {
+                            log('• ' + ev.type);
+                        }
+                    } catch {
+                        log('• raw ' + e.data);
+                    }
+                });
+                dc.addEventListener('close', () => log('❌ Data channel closed'));
+
+                pc.onconnectionstatechange = () => log('🔗 ' + pc.connectionState);
+                pc.oniceconnectionstatechange = () => log('🧊 ' + pc.iceConnectionState);
+
+                const offer = await pc.createOffer();
+                await pc.setLocalDescription(offer);
+                log('📡 Sending SDP offer...');
+
+                const sdpResp = await fetch(WEBRTC_URL, {
+                    method: 'POST',
+                    body: offer.sdp,
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/sdp',
+                    },
+                });
+                if (!sdpResp.ok) throw new Error(`SDP ${sdpResp.status}: ${await sdpResp.text()}`);
+                const answerSdp = await sdpResp.text();
+                await pc.setRemoteDescription({ type: 'answer', sdp: answerSdp });
+                log('✅ WebRTC session established. Start talking!');
+            } catch (err) {
+                log('❌ ' + err.message);
+                document.getElementById('startBtn').disabled = false;
+            }
+        }
+
+        function sendText() {
+            const input = document.getElementById('textInput');
+            const text = input.value.trim();
+            if (!text || !dc || dc.readyState !== 'open') return;
+            dc.send(JSON.stringify({
+                type: 'conversation.item.create',
+                item: { type: 'message', role: 'user', content: [{ type: 'input_text', text }] },
+            }));
+            dc.send(JSON.stringify({ type: 'response.create' }));
+            log('📤 user (text): ' + text);
+            input.value = '';
+        }
+
+        document.getElementById('textInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') sendText();
+        });
+
+        function stopSession() {
+            if (dc) dc.close();
+            if (pc) pc.close();
+            if (audioEl) audioEl.remove();
+            pc = dc = audioEl = null;
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            log('🛑 Session stopped');
+        }
+    </script>
+</body>
+</html>
