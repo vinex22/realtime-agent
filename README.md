@@ -1,9 +1,9 @@
-# realtime-agent
+# 🎙️ realtime-agent
 
 Two implementations of the Azure OpenAI GPT Realtime API for voice conversations,
-authenticated with **DefaultAzureCredential** (no API keys).
+authenticated with **DefaultAzureCredential** (no API keys 🔑).
 
-| | WebRTC (`webrtc/`) | WebSocket Proxy (`websocket/`) |
+| | 🌐 WebRTC (`webrtc/`) | 🔒 WebSocket Proxy (`websocket/`) |
 |---|---|---|
 | Audio path | Browser talks **directly** to Azure | All audio flows **through your server** |
 | Server role | Mint ephemeral token, serve page | Active relay for every audio frame |
@@ -16,7 +16,7 @@ Based on: <https://learn.microsoft.com/en-us/azure/ai-foundry/openai/how-to/real
 
 ---
 
-## Prerequisites (both versions)
+## ✅ Prerequisites (both versions)
 
 1. **Azure OpenAI / Foundry resource** in **East US 2** or **Sweden Central**
 2. A **realtime model deployment** (e.g. `gpt-realtime-1.5`, `gpt-4o-realtime-preview`, `gpt-realtime-mini`)
@@ -26,7 +26,7 @@ Based on: <https://learn.microsoft.com/en-us/azure/ai-foundry/openai/how-to/real
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 realtime-agent/
@@ -49,7 +49,7 @@ realtime-agent/
 
 ---
 
-## Configuration
+## ⚙️ Configuration
 
 Copy `.env.example` to `.env` and fill in:
 
@@ -62,7 +62,7 @@ REALTIME_INSTRUCTIONS=You are a helpful assistant.   # system prompt
 
 ---
 
-## Version 1: WebRTC (Direct)
+## 🌐 Version 1: WebRTC (Direct)
 
 ### How it works
 
@@ -153,7 +153,7 @@ curl https://<app-name>.azurewebsites.net/token
 
 ---
 
-## Version 2: WebSocket Proxy (VNet-safe)
+## 🔒 Version 2: WebSocket Proxy (VNet-safe)
 
 ### How it works
 
@@ -239,7 +239,7 @@ az webapp deploy -g realtime-agent -n <app-name> --src-path deploy.zip --type zi
 curl https://<app-name>.azurewebsites.net/
 ```
 
-### Adding VNet integration + Private Endpoint (production)
+### 🏗️ Adding VNet integration + Private Endpoint (production)
 
 For full VNet compliance, add these after the basic deployment:
 
@@ -283,7 +283,7 @@ and all audio traffic stays inside your VNet.
 
 ---
 
-## inspect_session.py (Debug Tool)
+## 🔍 inspect_session.py (Debug Tool)
 
 Fetches a token from the deployed WebRTC webapp, opens a WebSocket to Azure,
 sends a text message, and prints every event (including raw audio deltas).
@@ -296,7 +296,7 @@ python inspect_session.py
 
 ---
 
-## Troubleshooting
+## 🛠️ Troubleshooting
 
 | Problem | Fix |
 |---|---|
