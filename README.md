@@ -1,5 +1,7 @@
 # 🎙️ realtime-agent
 
+> Created by **vinayjain@microsoft.com** / **vinex22@gmail.com**
+
 Two implementations of the Azure OpenAI GPT Realtime API for voice conversations,
 authenticated with **DefaultAzureCredential** (no API keys 🔑).
 
