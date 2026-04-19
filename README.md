@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![DefaultAzureCredential](https://img.shields.io/badge/Auth-Managed%20Identity-red?logo=microsoft&logoColor=white)](#)
 
-> **Build real-time voice AI agents on Azure OpenAI** — two production-ready implementations with zero API keys, managed identity auth, and full deployment guides.
+> **Build real-time voice AI agents on Azure OpenAI** — ideal for call centers, contact centers, IVR replacements, and conversational AI. Two production-ready implementations with zero API keys, managed identity auth, and full deployment guides.
 >
 > Created by **[Vinayjain@microsoft.com](mailto:vinayjain@microsoft.com)** / **[Vinex22@gmail.com](mailto:vinex22@gmail.com)**
 
@@ -13,7 +13,14 @@
 
 ## 🔥 What is this?
 
-A complete sample for building **voice-based AI assistants** using the [Azure OpenAI GPT Realtime API](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/how-to/realtime-audio-webrtc). Talk to GPT models in real-time — like a phone call with AI. Two architectures included:
+A complete sample for building **real-time voice AI agents** using the [Azure OpenAI GPT Realtime API](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/how-to/realtime-audio-webrtc). Talk to GPT models in real-time — like a phone call with AI. Perfect for:
+
+- 📞 **Call center / contact center AI agents** — replace or augment IVR with GPT
+- 🤖 **Conversational AI voice assistants** — custom personality, real-time responses
+- 🏢 **Enterprise voice bots** — VNet-compliant, managed identity, no API keys
+- 🎧 **Customer support automation** — voice-in, voice-out, with tool/function calling
+
+Two architectures included:
 
 | | 🌐 **WebRTC** — Direct | 🔒 **WebSocket Proxy** — VNet-Safe |
 |---|---|---|
