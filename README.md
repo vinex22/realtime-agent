@@ -1,20 +1,58 @@
 # 🎙️ realtime-agent
 
-> Created by **vinayjain@microsoft.com** / **vinex22@gmail.com**
+[![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-blue?logo=python&logoColor=white)](https://python.org)
+[![Azure OpenAI](https://img.shields.io/badge/Azure%20OpenAI-Realtime%20API-0078D4?logo=microsoft-azure&logoColor=white)](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/how-to/realtime-audio-webrtc)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![DefaultAzureCredential](https://img.shields.io/badge/Auth-Managed%20Identity-red?logo=microsoft&logoColor=white)](#)
 
-Two implementations of the Azure OpenAI GPT Realtime API for voice conversations,
-authenticated with **DefaultAzureCredential** (no API keys 🔑).
+> **Build real-time voice AI agents on Azure OpenAI** — two production-ready implementations with zero API keys, managed identity auth, and full deployment guides.
+>
+> Created by **[Vinayjain@microsoft.com](mailto:vinayjain@microsoft.com)** / **[Vinex22@gmail.com](mailto:vinex22@gmail.com)**
 
-| | 🌐 WebRTC (`webrtc/`) | 🔒 WebSocket Proxy (`websocket/`) |
+---
+
+## 🔥 What is this?
+
+A complete sample for building **voice-based AI assistants** using the [Azure OpenAI GPT Realtime API](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/how-to/realtime-audio-webrtc). Talk to GPT models in real-time — like a phone call with AI. Two architectures included:
+
+| | 🌐 **WebRTC** — Direct | 🔒 **WebSocket Proxy** — VNet-Safe |
 |---|---|---|
-| Audio path | Browser talks **directly** to Azure | All audio flows **through your server** |
-| Server role | Mint ephemeral token, serve page | Active relay for every audio frame |
-| VNet / Private Endpoint | Audio bypasses it | Fully respected |
+| Audio path | Browser ↔ Azure **directly** | Browser ↔ **your server** ↔ Azure |
+| Server role | Mint token, serve page, go idle | Active relay for every audio frame |
+| VNet / Private Endpoint | ❌ Audio bypasses it | ✅ Fully respected |
 | Latency | ~200-400ms | ~300-600ms |
 | Server framework | Flask | FastAPI + uvicorn |
-| Best for | Low latency, demos, internal tools | Production, compliance, VNet-required |
+| Function calling / Tools | ❌ No server in the loop | ✅ Server can intercept and execute |
+| Best for | Low latency, demos, internal tools | Production, compliance, regulated industries |
 
-Based on: <https://learn.microsoft.com/en-us/azure/ai-foundry/openai/how-to/realtime-audio-webrtc>
+---
+
+## 🏗️ Architecture
+
+### WebRTC (Direct)
+
+The server mints a disposable token, then the browser talks **directly** to Azure OpenAI over WebRTC. Server goes idle.
+
+![WebRTC Architecture](webrtc/arch-webrtc.png)
+
+### WebSocket Proxy (VNet-Safe)
+
+All audio flows through your server. Browser never contacts Azure. Compatible with Private Endpoints and VNet injection.
+
+![WebSocket Proxy Architecture](websocket/arch-websocket.png)
+
+---
+
+## 📋 Table of Contents
+
+- [Prerequisites](#-prerequisites-both-versions)
+- [Project Structure](#-project-structure)
+- [Configuration](#️-configuration)
+- [Version 1: WebRTC (Direct)](#-version-1-webrtc-direct)
+- [Version 2: WebSocket Proxy (VNet-Safe)](#-version-2-websocket-proxy-vnet-safe)
+- [Proving No Direct Communication](#-proving-no-direct-communication-websocket-proxy)
+- [Debug Tool (inspect_session.py)](#-inspect_sessionpy-debug-tool)
+- [Troubleshooting](#️-troubleshooting)
 
 ---
 
